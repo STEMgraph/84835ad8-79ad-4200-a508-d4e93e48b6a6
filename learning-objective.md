@@ -1,0 +1,1 @@
+At the end of this challenge, the scholar will be able to use Git to manage a local repository effectively, understand the roles of the working tree, staging area, and commit history, navigate through commits using \texttt{git log}, and practice essential operations such as checking out commits, reverting to the latest changes, and discarding modifications.

@@ -1,0 +1,138 @@
+\begin{challenge}
+    \chatitle{Introduction to Git: Managing a Local Repository}
+    \begin{chadescription}
+    Git is a tool, that was developed by Linus Torvalds, to manage source code in distributed software projects.
+    There are a few challenges, when it comes to working with multiple developers on the same project.
+    Git is one possible way that aims to mitigate these challenges and provide developers with a useful tool for keeping track of changes and collaborating on their codebase.
+    It is often times called \textit{version control} or \textit{source control}.
+    Anyway, that is a description of its use, not what it is: a tool for managing collections of files within a directory.
+    Understanding the complete functionality of Git is beyond the scope of this challenge and takes multiple years of study, as well as constant practice.
+    That being said, we will focus in this challenge on the basics of working with a local Git repository.
+    As already mentioned, Git helps you keeping track of changes in a specific directory.
+    In order to do that, Git needs its own storage space, sort of like an archive of all changes. 
+    This storage space is called a \textit{repository} and in comparison to other database-management systems, it is not global to your computer, but rather local to each individual directory, that is managed by Git.
+    Git does this, by creating a directory called \texttt{.git} in the root of your project and storing all changes in this directory.
+    Don't worry too much: you won't have to deal with this directory directly, but rather through a handful of commands, that will be introduced in this challenge.
+    You will understand key concepts like the working tree, staging area, and commit history, and practice navigating and managing changes in your repository.
+    By the end of this challenge, you will be able to create a local repository, make and review commits, navigate through commit history, and discard unwanted changes confidently.
+
+    \textbf{Note:} Before you start, make sure, that you have Git installed on your computer.
+    Run \texttt{git --version} to check if it is installed and if it is, then you can continue with the challenge.
+    Otherwise you can use your favourite package manager to install it.
+    For example on Ubuntu: \texttt{sudo apt install git}.
+    \end{chadescription}
+
+    \begin{task}
+        In order for us to work correctly with Git, lets configure it to a certain state. 
+        We do that by running the following commands:
+        \begin{lstlisting}
+        git config --global user.name "Your Name"
+        git config --global user.email "Your Email"
+        git config --global core.editor "vim"
+        git config --global init.defaultBranch master
+        \end{lstlisting}
+    \end{task}
+
+    \begin{task}
+        Since Git isn't working globally, each directory that we want to keep an eye on needs to be initialized as a repository manually using \texttt{git init}.
+        This command will create a new directory, called \texttt{.git}, in the current directory and initialize the repository there.
+        Your repository is empty at this point, but it's ready to receive changes.
+        Changes are done and saved in the repository in a multi step process.
+        The most important part of this process is, that you are always aware of the current state of your repository.
+        You can figure that out, by using \texttt{git status}.
+        We start by changing the contents of our directory, we tell Git which exact changes we want to save to our repository, and finally we store - or commit - the changes to our repository.
+        When we are doing our commit we will be asked to decorate our commit with a message.
+        The terminal will open a text editor for us to write our message.
+        
+        \begin{enumerate}
+            \item Create a new directory named \texttt{my-git-project} in your home directory.
+            \item Navigate into the directory and run \texttt{git status}.
+            \item As you have seen from the output of \texttt{git status}, the directory is empty. We need to initialize it as a Git repository using \texttt{git init}. This creates the hidden directory \texttt{.git} in the current directory. Run \texttt{git status} again to see the changes.
+            \item Create a new file named \texttt{file.txt} and add some text to it. Run \texttt{git status} and see has changed.
+            \item Mark the file for the next commit using \texttt{git add file.txt}. This is also refered to as \texttt{staging}. You guessed it: run \texttt{git status} to see the changes, again. 
+            \item Commit (or store) the changes by calling \texttt{git commit}. This creates a savepoint of all of the files, you added to the staging area. Next step? Run \texttt{git status}.
+            \item \texttt{vim} (or your preferred text editor) will open. Use it to formulate a one-line commit message saying \texttt{"Initial commit"}. Actually, this is a pretty common message for the first commit of a project. We will investigate more sophisticated commit messages later.
+            \item After modifying your textbuffer, save the file and close \texttt{vim} by pressing \texttt{Esc} and \texttt{:wq} and \texttt{Enter}.
+        \end{enumerate}
+        You can run \texttt{git status} over and over again. 
+        It will not change anything in your repo, but will help you to understand the state of your repository.
+        A common excercise is to run \texttt{git status} after each commit but try to guess correctly what the output will be.
+
+        \begin{questions}
+            \item What does the command \texttt{git init} do?
+            \item How can you check which files have been staged for the next commit?
+            \item What is the purpose of the commit message, and why is it important?
+        \end{questions}
+    \end{task}
+
+    \begin{task}
+        The Git repository is managed in three areas, that all exist simultaneously:
+        \begin{itemize}
+            \item \textbf{Working Tree}: The files you're actively editing.
+            \item \textbf{Staging Area}: Files marked to be included in the next commit.
+            \item \textbf{Repository}: The committed changes stored in Git.
+        \end{itemize}
+        Let's explore how these areas work together:
+        \begin{enumerate}
+            \item Modify \texttt{file.txt} by adding a new line of text but do not stage the changes.
+            \item Run \texttt{git status} and note the message about the modified file.
+            \item Stage the changes using \texttt{git add file.txt}. Run \texttt{git status} again to observe how the status changes.
+            \item Commit the staged changes with the message \texttt{"Added more content to file.txt"}.
+            \item Modify \texttt{file.txt} again, but this time, stage it with \texttt{git add file.txt}, and then directly commit using \texttt{git commit -m "Quick commit"}. Observe how the commit message is provided inline.
+        \end{enumerate}
+
+        \begin{questions}
+            \item What does \texttt{git add} do, and how does it move changes from the working tree to the staging area?
+            \item Why is it useful to have a staging area separate from the working tree?
+            \item How does providing a commit message inline with \texttt{-m} differ from the default method of opening a text editor?
+        \end{questions}
+    \end{task}
+
+    \begin{task}
+        In Git, every commit is stored with a unique identifier, making it possible to navigate through the repository's history.
+        The identifier is calculated from all the changes that have been made to the repository since the last commit.
+        The method of calculating identifiers like this is called a \textbf{hashing}.
+        Its result is a 40 character long string, that is unique for each commit and is called a \textbf{commit hash}.
+        \begin{enumerate}
+            \item Use \texttt{git log --oneline} to view a compact summary of the commit history.
+            \item Identify the hash of the initial commit and check it out using \texttt{git checkout <hash>}.
+            \item Run \texttt{git status} and observe that you are now in a detached HEAD state.
+            \item Open \texttt{file.txt} and compare its content to the latest version you remember editing.
+            \item Return to the latest commit by running \texttt{git checkout master}.
+        \end{enumerate}
+
+        \begin{questions}
+            \item What information does \texttt{git log --oneline} provide compared to \texttt{git log}?
+            \item What does the detached HEAD state mean, and why is it important to return to the master branch after checking out an old commit?
+            \item How does Git ensure the safety of your current changes when navigating through the history?
+        \end{questions}
+    \end{task}
+
+    \begin{task}
+        Discarding unwanted changes is a critical skill when working with Git.
+        Sometimes we end up making changes to the repository that we don't want to commit.
+        We'd like to get rid of these changes, but we don't want to lose them.
+        \begin{enumerate}
+            \item Modify \texttt{file.txt} but do not stage the changes.
+            \item Run \texttt{git status} to confirm that the file has been modified.
+            \item Discard the changes using \texttt{git restore file.txt}. Open \texttt{file.txt} to verify the changes are gone.
+            \item Make another modification, stage it using \texttt{git add file.txt}, and then unstage it using \texttt{git restore --staged file.txt}. Verify the file's state with \texttt{git status}.
+            \item Modify \texttt{file.txt} again, but this time, discard all changes in the working directory with \texttt{git restore .}.
+        \end{enumerate}
+
+        \begin{questions}
+            \item How does \texttt{git restore} differ from \texttt{git checkout} when used to discard changes?
+            \item Why is it important to review your changes carefully with \texttt{git status} before discarding them?
+            \item What is the difference between restoring changes in the working tree and unstaging changes from the staging area?
+        \end{questions}
+    \end{task}
+
+
+    \begin{advise}
+        Git is a powerful tool, but it can seem complex at first. 
+        Focus on understanding the basic workflow: modifying files in the working tree, staging changes, and committing them to the repository. 
+        Commands like \texttt{git log}, \texttt{git checkout}, and \texttt{git restore} are essential for navigating and managing your repository. 
+        Always review your changes carefully using \texttt{git status} before committing or discarding them. 
+        With practice, you will gain confidence and develop efficient habits for managing code with Git.
+    \end{advise}
+\end{challenge}
